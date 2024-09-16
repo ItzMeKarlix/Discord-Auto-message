@@ -1,6 +1,5 @@
 import json
 import sys
-import random
 import time
 from datetime import datetime
 from http.client import HTTPSConnection
