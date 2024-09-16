@@ -15,10 +15,9 @@ def get_timestamp():
     return "[" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + "]"
 
 
-
 def read_info():
     try:
-        with open(INFO_FILE, "r") as file:
+        with open(INFO_FILE, "r", encoding="utf-8") as file:
             return file.read().splitlines()
     except FileNotFoundError:
         print(f"{get_timestamp()} Info file not found.")
@@ -27,7 +26,7 @@ def read_info():
 
 def write_info(user_id, token, channel_url, channel_id):
     try:
-        with open(INFO_FILE, "w") as file:
+        with open(INFO_FILE, "w", encoding="utf-8") as file:
             file.write(f"{user_id}\n{token}\n{channel_url}\n{channel_id}")
     except Exception as e:
         print(f"{get_timestamp()} Error configuring user information: {e}")
@@ -68,7 +67,7 @@ def show_help():
 
 def send_message(conn, channel_id, message_data, header_data):
     try:
-        conn.request("POST", f"/api/v6/channels/{channel_id}/messages", message_data, header_data)
+        conn.request("POST", f"/api/v6/channels/{channel_id}/messages", message_data.encode('utf-8'), header_data)
         resp = conn.getresponse()
         if 199 < resp.status < 300:
             print(f"{get_timestamp()} Message {message_data} sent!")
@@ -116,24 +115,20 @@ def main():
 
     while True:
         try:
-            with open(MESSAGES_FILE, "r") as file:
+            with open(MESSAGES_FILE, "r", encoding="utf-8") as file:
                 messages = file.read()
         except FileNotFoundError:
             print(f"{get_timestamp()} Messages file not found.")
             return
-
 
         message_data = json.dumps({"content": messages})
         conn = get_connection()
         send_message(conn, info[3], message_data, header_data)
         conn.close()
 
-
         print(f"{get_timestamp()} Finished sending all messages!")
         print(f"{get_timestamp()} Sleeping for {sleep_time} seconds")
         time.sleep(sleep_time)
-
-
 
 
 if __name__ == "__main__":
@@ -143,3 +138,4 @@ if __name__ == "__main__":
 # @ItzMeKarlix at all socials
 # https://github.com/itzmekarlix
 # credits to https://github.com/xRiddin
+
