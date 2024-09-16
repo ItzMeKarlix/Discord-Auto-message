@@ -16,12 +16,6 @@ def get_timestamp():
     return "[" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + "]"
 
 
-def random_sleep(duration, min_random, max_random):
-    sleep_duration = duration + random.randint(min_random, max_random)
-    print(f"{get_timestamp()} Sleeping for {sleep_duration} seconds")
-
-    time.sleep(sleep_duration)
-
 
 def read_info():
     try:
@@ -116,32 +110,37 @@ def main():
         "host": "discordapp.com",
         "referrer": info[2]
     }
-
+    print("[Karlix says hello]")
     print(f"{get_timestamp()} Messages will be sent to " + header_data["referrer"] + ".")
-
     print("Please initialise your delays and sleep time, there will be some random offsets applied as well!\n")
-    delay_between_messages = int(input("Delay (in seconds) between messages: "))
     sleep_time = int(input("Sleep time (in seconds): "))
 
     while True:
         try:
             with open(MESSAGES_FILE, "r") as file:
-                messages = file.read().splitlines()
+                messages = file.read()
         except FileNotFoundError:
             print(f"{get_timestamp()} Messages file not found.")
             return
 
-        for message in messages:
-            message_data = json.dumps({"content": message})
-            conn = get_connection()
-            send_message(conn, info[3], message_data, header_data)
-            conn.close()
 
-            random_sleep(delay_between_messages, 1, 10)
+        message_data = json.dumps({"content": messages})
+        conn = get_connection()
+        send_message(conn, info[3], message_data, header_data)
+        conn.close()
+
 
         print(f"{get_timestamp()} Finished sending all messages!")
-        random_sleep(sleep_time, 20, 1200)
+        print(f"{get_timestamp()} Sleeping for {sleep_time} seconds")
+        time.sleep(sleep_time)
+
+
 
 
 if __name__ == "__main__":
     main()
+
+# Karlix Says Hello :D 
+# @ItzMeKarlix at all socials
+# https://github.com/itzmekarlix
+# credits to https://github.com/xRiddin
